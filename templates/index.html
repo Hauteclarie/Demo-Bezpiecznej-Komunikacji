@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Bezpiecznej Komunikacji</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, textarea, button {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            background-color: #e9ecef;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Demo Bezpiecznej Komunikacji</h1>
+
+        <form id="encrypt-form">
+            <label for="message">Wiadomość do zaszyfrowania:</label>
+            <textarea id="message" name="message" rows="4" required></textarea>
+            <button type="submit">Zaszyfruj</button>
+        </form>
+
+        <div id="encrypt-result" class="result" style="display: none;"></div>
+
+        <form id="decrypt-form">
+            <label for="encrypted">Zaszyfrowana wiadomość:</label>
+            <textarea id="encrypted" name="encrypted" rows="4" required></textarea>
+            <button type="submit">Odszyfruj</button>
+        </form>
+
+        <div id="decrypt-result" class="result" style="display: none;"></div>
+
+        <form id="sql-injection-form">
+            <label for="sql-input">Wprowadź zapytanie SQL:</label>
+            <input id="sql-input" name="input" type="text" required>
+            <button type="submit">Wykonaj (Demo podatności)</button>
+        </form>
+
+        <div id="sql-injection-result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function handleFormSubmit(event, url, resultElementId) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            const resultElement = document.getElementById(resultElementId);
+
+            resultElement.style.display = 'block';
+            resultElement.textContent = JSON.stringify(result, null, 2);
+        }
+
+        document.getElementById('encrypt-form').addEventListener('submit', (event) => {
+            handleFormSubmit(event, '/encrypt', 'encrypt-result');
+        });
+
+        document.getElementById('decrypt-form').addEventListener('submit', (event) => {
+            handleFormSubmit(event, '/decrypt', 'decrypt-result');
+        });
+
+        document.getElementById('sql-injection-form').addEventListener('submit', (event) => {
+            handleFormSubmit(event, '/sql_injection_demo', 'sql-injection-result');
+        });
+    </script>
+</body>
+</html>
